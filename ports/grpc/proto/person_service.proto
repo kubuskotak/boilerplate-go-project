@@ -1,0 +1,23 @@
+syntax = "proto3";
+option go_package = ".;person_service";
+
+package person_service;
+
+
+message Person {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message ListPersonsRequest {
+  int32 page_size = 1;
+}
+
+message ListPersonsResponse {
+  repeated Person persons = 1;
+}
+
+service PersonService {
+  rpc List (ListPersonsRequest) returns (ListPersonsResponse) {}
+}

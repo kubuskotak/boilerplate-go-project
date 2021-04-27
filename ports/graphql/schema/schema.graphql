@@ -3,5 +3,11 @@ type Query {
 }
 
 type Mutation {
-    setHello(name: String!): String!
+    setHello(name: String!): [Person]!
+}
+
+type Person {
+    Id: String!
+    Name: String!
+    Email: String!
 }
