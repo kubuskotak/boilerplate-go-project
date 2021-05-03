@@ -2,10 +2,14 @@
 App:
   name: "valkyrie"
   version: "0.1.0"
-  port: 8009
+  latency: 30 # milliseconds
   read_timeout: 5 # seconds
   write_timeout: 10 # seconds
   debug: false # (true|false)
   env: staging # ('development'|'staging'|'production')
   secret_key: sekret
   expire_in: 10800
+
+Ports:
+  http: 8009
+  grpc: 5077

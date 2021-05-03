@@ -12,7 +12,7 @@ import (
 type Config struct {
 	App struct {
 		Name         string         `yaml:"name"`
-		Port         int            `yaml:"port"`
+		Latency      int            `yaml:"latency"`
 		ReadTimeout  int            `yaml:"read_timeout"`
 		WriteTimeout int            `yaml:"write_timeout"`
 		Timezone     string         `yaml:"timezone"`
@@ -21,6 +21,11 @@ type Config struct {
 		SecretKey    string         `yaml:"secret_key"`
 		ExpireIn     *time.Duration `yaml:"expire_in"`
 	} `yaml:"App"`
+
+	Port struct {
+		Http int `yaml:"http"`
+		Grpc int `yaml:"grpc"`
+	} `yaml:"Ports"`
 
 	DB struct {
 		DsnMain string `yaml:"dsn_main" env:"DSN_MAIN"`

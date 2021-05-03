@@ -1,34 +1,32 @@
 package rest
 
 import (
-	"net/http"
+	"context"
+	"time"
 
-	graph "github.com/graph-gophers/graphql-go"
+	"github.com/go-chi/chi/v5"
 	"github.com/kubuskotak/bifrost"
 	"github.com/kubuskotak/boilerplate-go-project/config"
-	"github.com/kubuskotak/boilerplate-go-project/ports/graphql"
-	"github.com/rs/zerolog/log"
 )
 
 // Application Rest func
 func Application() error {
 	cfg := config.GetConfig()
-	log.Info().Interface("Config", &cfg).Msg("Application rest")
-
 	serve := bifrost.NewServerMux(bifrost.ServeOpts{
-		Port: bifrost.WebPort(8077),
+		Port: bifrost.WebPort(cfg.Port.Http),
 	})
-	mux := http.NewServeMux()
-	graphQuery := "/query"
-	qlQuery := "/qraphql"
+	ctx, cancel := context.WithTimeout(
+		context.Background(),
+		time.Duration(cfg.App.Latency)*time.Millisecond,
+	)
+	defer cancel()
 
-	opts := []graph.SchemaOpt{graph.UseFieldResolvers()}
+	r := chi.NewRouter()
+	hello := &Hello{}
+	hello.Register(ctx, r)
 
-	mux.Handle(graphQuery, bifrost.Graphql(
-		graphql.Graphql,
-		"schema",
-		&graphql.Resolver{}, opts...))
-	mux.Handle(qlQuery, bifrost.Graph(graphQuery))
+	graphql := Graphql{}
+	graphql.Register(ctx, r)
 
-	return serve.Run(mux)
+	return serve.Run(r)
 }
