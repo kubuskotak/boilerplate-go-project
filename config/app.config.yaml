@@ -1,0 +1,11 @@
+# App configuration
+App:
+  name: "valkyrie"
+  version: "0.1.0"
+  port: 8009
+  read_timeout: 5 # seconds
+  write_timeout: 10 # seconds
+  debug: false # (true|false)
+  env: staging # ('development'|'staging'|'production')
+  secret_key: sekret
+  expire_in: 10800
