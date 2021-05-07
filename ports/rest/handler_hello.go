@@ -24,7 +24,7 @@ type Hello struct {
 	Tracer opentracing.Tracer
 }
 
-func (h *Hello) Register(ctx context.Context, router *chi.Mux) {
+func (h *Hello) Register(ctx context.Context, router chi.Router) {
 	router.Use(bifrost.HttpTracer)
 	router.Post("/hello", bifrost.HandlerAdapter(h.Hello))
 }

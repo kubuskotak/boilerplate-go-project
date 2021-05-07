@@ -31,11 +31,15 @@ func Application() error {
 	opentracing.SetGlobalTracer(tracer)
 
 	r := chi.NewRouter()
-	hello := &Hello{Tracer: tracer}
-	hello.Register(ctx, r)
+	r.Group(func(c chi.Router) {
+		graphql := Graphql{}
+		graphql.Register(ctx, c)
+	})
 
-	graphql := Graphql{}
-	graphql.Register(ctx, r)
+	r.Group(func(c chi.Router) {
+		hello := &Hello{Tracer: tracer}
+		hello.Register(ctx, c)
+	})
 
 	errServer := serve.Run(r)
 	cleanup()

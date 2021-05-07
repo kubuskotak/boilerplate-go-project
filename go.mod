@@ -8,6 +8,7 @@ require (
 	github.com/go-chi/httptracer v0.3.0 // indirect
 	github.com/golang/protobuf v1.5.2
 	github.com/graph-gophers/graphql-go v1.0.0
+	github.com/grpc-ecosystem/grpc-opentracing v0.0.0-20180507213350-8e809c8a8645 // indirect
 	github.com/kubuskotak/bifrost v0.2.1-0.20210505140728-725c64063140
 	github.com/kubuskotak/valkyrie v0.1.9
 	github.com/opentracing/opentracing-go v1.2.0 // indirect

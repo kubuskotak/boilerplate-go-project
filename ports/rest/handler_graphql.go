@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	graph "github.com/graph-gophers/graphql-go"
+	"github.com/graph-gophers/graphql-go/trace"
 	"github.com/kubuskotak/bifrost"
 	"github.com/kubuskotak/boilerplate-go-project/ports/graphql"
 )
@@ -12,8 +13,8 @@ import (
 type Graphql struct {
 }
 
-func (g *Graphql) Register(ctx context.Context, router *chi.Mux) {
-	opts := []graph.SchemaOpt{graph.UseFieldResolvers()}
+func (g *Graphql) Register(ctx context.Context, router chi.Router) {
+	opts := []graph.SchemaOpt{graph.Tracer(&trace.OpenTracingTracer{}), graph.UseFieldResolvers()}
 	router.Handle("/query", bifrost.Graphql(
 		graphql.Graphql,
 		"schema",
