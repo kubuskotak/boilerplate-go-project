@@ -7,6 +7,8 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/kubuskotak/bifrost"
 	"github.com/kubuskotak/boilerplate-go-project/config"
+	"github.com/kubuskotak/valkyrie"
+	"github.com/opentracing/opentracing-go"
 )
 
 // Application Rest func
@@ -21,12 +23,21 @@ func Application() error {
 	)
 	defer cancel()
 
+	tracer, cleanup, err := valkyrie.Tracer("hello", "0.2.0")
+	if err != nil {
+		return err
+	}
+
+	opentracing.SetGlobalTracer(tracer)
+
 	r := chi.NewRouter()
-	hello := &Hello{}
+	hello := &Hello{Tracer: tracer}
 	hello.Register(ctx, r)
 
 	graphql := Graphql{}
 	graphql.Register(ctx, r)
 
-	return serve.Run(r)
+	errServer := serve.Run(r)
+	cleanup()
+	return errServer
 }
