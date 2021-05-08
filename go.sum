@@ -98,6 +98,8 @@ github.com/kubuskotak/bifrost v0.2.1-0.20210505135337-7536b405fa18 h1:nk2qJ6NQh0
 github.com/kubuskotak/bifrost v0.2.1-0.20210505135337-7536b405fa18/go.mod h1:75cB6HOdY6p/tC1HIK/rhUdY052YaBuT5qPwZgOnVOw=
 github.com/kubuskotak/bifrost v0.2.1-0.20210505140728-725c64063140 h1:CVQQaDvun81m1kazIetaGTtcLEQQco+ett4mBz0eIJ0=
 github.com/kubuskotak/bifrost v0.2.1-0.20210505140728-725c64063140/go.mod h1:diYixRqqDNKfrh/D+Uw1zVrqyJ/0Ut0n6pHslOdbUm4=
+github.com/kubuskotak/bifrost v0.2.1-0.20210507190143-6e41ffa19e3e h1:nJDXxtjJCEY7N//hQiWXYliyzpMTqbeZjRmqnLkZodI=
+github.com/kubuskotak/bifrost v0.2.1-0.20210507190143-6e41ffa19e3e/go.mod h1:diYixRqqDNKfrh/D+Uw1zVrqyJ/0Ut0n6pHslOdbUm4=
 github.com/kubuskotak/valkyrie v0.1.9 h1:WqEUeeIrdl4JUYg9NPRvHPrrQZ/UmXe44JWN0qOpNUs=
 github.com/kubuskotak/valkyrie v0.1.9/go.mod h1:8QRiTEPJlFaSYCdXZIfMjlKVl5eqfoWmWnYY/E+jvww=
 github.com/leodido/go-urn v1.2.0 h1:hpXL4XnriNwQ/ABnpepYM/1vCLWNDfUNts8dX3xTG6Y=
