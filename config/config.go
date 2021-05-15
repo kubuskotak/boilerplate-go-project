@@ -33,20 +33,20 @@ type Config struct {
 }
 
 var (
-	instance *Config
+	Instance *Config
 	once     sync.Once
 )
 
 func GetConfig() *Config {
 	once.Do(func() {
-		instance = &Config{}
+		Instance = &Config{}
 		if err := valkyrie.Config(valkyrie.ConfigOpts{
-			Config:    instance,
+			Config:    Instance,
 			Paths:     []string{"./config"},
 			Filenames: []string{"app.config.yaml", ".env"},
 		}); err != nil {
 			log.Error().Err(err).Msg("get config error")
 		}
 	})
-	return instance
+	return Instance
 }
