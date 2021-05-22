@@ -14,13 +14,11 @@ type PersonServer struct {
 // Application Rest func
 func Application() error {
 	cfg := config.GetConfig()
-	ps := PersonServer{}
-
 	serve := bifrost.NewServerGRPC(bifrost.GRPCOpts{
 		Port: bifrost.GRPCPort(cfg.Port.Grpc),
 	})
 
 	return serve.Run(func(s *grpc.Server) {
-		person.RegisterPersonServiceServer(s, ps)
+		person.RegisterPersonServiceServer(s, PersonServer{})
 	})
 }

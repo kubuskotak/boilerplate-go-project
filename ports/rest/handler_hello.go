@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/kubuskotak/bifrost"
+	"github.com/kubuskotak/boilerplate-go-project/domain/usecase"
 	"github.com/kubuskotak/valkyrie"
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
@@ -21,7 +22,7 @@ type FormBodyHello struct {
 }
 
 type Hello struct {
-	Tracer opentracing.Tracer
+	*usecase.Service
 }
 
 func (h *Hello) Register(ctx context.Context, router chi.Router) {
@@ -30,11 +31,11 @@ func (h *Hello) Register(ctx context.Context, router chi.Router) {
 }
 
 func (h *Hello) Hello(w http.ResponseWriter, r *http.Request) error {
-	span, _ := opentracing.StartSpanFromContext(r.Context(), "Hello.post")
+	span, ctx := opentracing.StartSpanFromContext(r.Context(), "Hello.post")
 	defer span.Finish()
 
 	bifrost.JSONResponse(w)
-	var form FormBodyHello
+	var form usecase.RegisterParams
 	if err := bifrost.RequestJSONBody(r, &form); err != nil {
 		log.Error().Err(err).Msg("Request JSON body")
 		return bifrost.ErrBadGateway(w, r, err)
@@ -69,5 +70,11 @@ func (h *Hello) Hello(w http.ResponseWriter, r *http.Request) error {
 
 	log.Info().Interface("Tracer ID", r.Context().Value(bifrost.TracerContext)).Msg("tracer id")
 
-	return bifrost.ResponsePayload(w, r, http.StatusOK, form)
+	u, err := h.Service.Register(ctx, form)
+	if err != nil {
+		log.Error().Err(err).Msg("Register user is failed")
+		return bifrost.ErrBadRequest(w, r, err)
+	}
+
+	return bifrost.ResponsePayload(w, r, http.StatusCreated, u)
 }

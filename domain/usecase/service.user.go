@@ -7,16 +7,16 @@ import (
 	"github.com/kubuskotak/boilerplate-go-project/config"
 	"github.com/kubuskotak/boilerplate-go-project/domain/entity"
 	"github.com/kubuskotak/boilerplate-go-project/domain/repository"
-	"github.com/kubuskotak/boilerplate-go-project/pkg/db"
+	"github.com/kubuskotak/tyr"
 	"github.com/kubuskotak/valkyrie"
 	"github.com/rs/zerolog/log"
 )
 
 type RegisterParams struct {
-	Username string `json:"username" binding:"required,alphanum"`
-	Password string `json:"password" binding:"required,min=6"`
-	FullName string `json:"full_name" binding:"required"`
-	Email    string `json:"email" binding:"required,email"`
+	Username string `json:"username" validate:"required,alphanum"`
+	Password string `json:"password" validate:"required,min=6"`
+	FullName string `json:"full_name" validate:"required"`
+	Email    string `json:"email" validate:"required,email"`
 }
 
 func (s *Service) Register(ctx context.Context, args RegisterParams) (entity.User, error) {
@@ -33,7 +33,7 @@ func (s *Service) Register(ctx context.Context, args RegisterParams) (entity.Use
 			HashedPassword: hashedPassword,
 		})
 		if txErr != nil {
-			e := db.CatchErr(txErr)
+			e := tyr.CatchErr(txErr)
 			log.Error().Err(e).Msg("Register")
 			return e
 		}

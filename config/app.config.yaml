@@ -13,3 +13,8 @@ App:
 Ports:
   http: 8009
   grpc: 5077
+
+DB:
+  max_life_time: 3
+  max_open: 10
+  max_idle: 10

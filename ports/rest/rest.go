@@ -6,7 +6,10 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/kubuskotak/bifrost"
+	"github.com/kubuskotak/boilerplate-go-project/adapter"
 	"github.com/kubuskotak/boilerplate-go-project/config"
+	"github.com/kubuskotak/boilerplate-go-project/domain/usecase"
+	"github.com/kubuskotak/tyr"
 	"github.com/kubuskotak/valkyrie"
 	"github.com/opentracing/opentracing-go"
 )
@@ -30,6 +33,16 @@ func Application() error {
 
 	opentracing.SetGlobalTracer(tracer)
 
+	pg, pgClose, pgErr := adapter.PersistenceDB(adapter.SqlParams{
+		Driver:      tyr.POSTGRES,
+		DSN:         cfg.DB.PGDsn,
+		MaxOpen:     cfg.DB.MaxOpen,
+		MaxIdle:     cfg.DB.MaxIdle,
+		MaxLifeTime: cfg.DB.MaxLifeTime,
+	}, "simpledb")
+	if pgErr != nil {
+		return pgErr
+	}
 	r := chi.NewRouter()
 	r.Group(func(c chi.Router) {
 		graphql := Graphql{}
@@ -37,11 +50,12 @@ func Application() error {
 	})
 
 	r.Group(func(c chi.Router) {
-		hello := &Hello{Tracer: tracer}
+		hello := &Hello{Service: usecase.NewService(pg)}
 		hello.Register(ctx, c)
 	})
 
 	errServer := serve.Run(r)
 	cleanup()
+	pgClose()
 	return errServer
 }

@@ -6,33 +6,42 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kubuskotak/boilerplate-go-project/pkg/db"
+	"github.com/kubuskotak/tyr"
 	"github.com/rs/zerolog/log"
 )
 
-var sqlOpen = db.New
+var sqlOpen = tyr.New
 
-func PostgresDB(args db.SqlParams) (*db.Sql, func(), error) {
-	pg, err := sqlOpen(db.SqlConnParams{
+type SqlParams struct {
+	Driver      string
+	DSN         string
+	MaxOpen     int
+	MaxIdle     int
+	MaxLifeTime int
+}
+
+func PersistenceDB(args SqlParams, dbName string) (*tyr.Sql, func(), error) {
+	conn, err := sqlOpen(tyr.SqlConnParams{
 		Driver: args.Driver,
 		Dsn:    args.DSN,
 	})
 	if err != nil {
-
+		log.Error().Err(err).Msg("connection is failed")
+		return nil, nil, err
 	}
 
 	cleanup := func() {
-		_ = pg.Db.Close()
+		_ = conn.Db.Close()
 	}
 
-	pg.Db.SetMaxOpenConns(args.MaxOpen)
-	pg.Db.SetMaxIdleConns(args.MaxIdle)
-	pg.Db.SetConnMaxLifetime(time.Second * time.Duration(args.MaxLifeTime))
+	conn.Db.SetConnMaxLifetime(time.Minute * time.Duration(args.MaxLifeTime))
+	conn.Db.SetMaxOpenConns(args.MaxOpen)
+	conn.Db.SetMaxIdleConns(args.MaxIdle)
 
 	errChan := make(chan error)
-	go Routine(context.Background(), "Courier", pg.Db, errChan)
+	go Routine(context.Background(), dbName, conn.Db, errChan)
 
-	return pg, cleanup, nil
+	return conn, cleanup, nil
 }
 
 func Routine(ctx context.Context, name string, db *sql.DB, er chan error) {

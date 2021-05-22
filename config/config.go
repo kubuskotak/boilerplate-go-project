@@ -28,8 +28,12 @@ type Config struct {
 	} `yaml:"Ports"`
 
 	DB struct {
-		DsnMain string `yaml:"dsn_main" env:"DSN_MAIN"`
-	}
+		MaxLifeTime int    `yaml:"max_life_time"`
+		MaxOpen     int    `yaml:"max_open"`
+		MaxIdle     int    `yaml:"max_idle"`
+		MysqlDsn    string `yaml:"mysql_dsn" env:"MYSQL_DSN"`
+		PGDsn       string `yaml:"pg_dsn" env:"PG_DSN"`
+	} `yaml:"DB"`
 }
 
 var (

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/kubuskotak/boilerplate-go-project/domain/entity"
-	"github.com/kubuskotak/boilerplate-go-project/pkg/db"
+	"github.com/kubuskotak/tyr"
 	"github.com/rs/zerolog/log"
 )
 
@@ -43,7 +43,7 @@ func (q *SQLStore) CreateUser(ctx context.Context, arg CreateUserParams) (entity
 		&u.CreatedAt,
 	)
 	if err != nil {
-		e := db.CatchErr(err)
+		e := tyr.CatchErr(err)
 		log.Error().Err(e).Msg("CreateUser")
 		return u, e
 	}
@@ -67,7 +67,7 @@ func (q *SQLStore) GetUser(ctx context.Context, username string) (entity.User, e
 		&u.CreatedAt,
 	)
 	if err != nil {
-		e := db.CatchErr(err)
+		e := tyr.CatchErr(err)
 		log.Error().Err(e).Msg("GetUser")
 		return u, e
 	}

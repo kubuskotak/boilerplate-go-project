@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/kubuskotak/boilerplate-go-project/domain/entity"
-	"github.com/kubuskotak/boilerplate-go-project/pkg/db"
+	"github.com/kubuskotak/tyr"
 )
 
 type Adapter interface {
@@ -13,9 +13,9 @@ type Adapter interface {
 }
 
 type SQLStore struct {
-	db db.Driver
+	db tyr.Driver
 }
 
-func NewSQL(db db.Driver) Adapter {
+func NewSQL(db tyr.Driver) Adapter {
 	return &SQLStore{db: db}
 }

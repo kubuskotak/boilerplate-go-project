@@ -1,7 +1,13 @@
 package usecase
 
-import "github.com/kubuskotak/boilerplate-go-project/pkg/db"
+import (
+	"github.com/kubuskotak/tyr"
+)
 
 type Service struct {
-	store *db.Sql
+	store *tyr.Sql
+}
+
+func NewService(sql *tyr.Sql) *Service {
+	return &Service{store: sql}
 }

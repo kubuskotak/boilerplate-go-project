@@ -9,7 +9,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/kubuskotak/boilerplate-go-project/domain/entity"
-	"github.com/kubuskotak/boilerplate-go-project/pkg/db"
+	"github.com/kubuskotak/tyr"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
@@ -91,7 +91,7 @@ func (r *RepoSuite) TestCreateUserFail() {
 		CreatedAt:         now,
 	}
 
-	actual := &db.Error{
+	actual := &tyr.Error{
 		Code:    "1160",
 		Message: sql.ErrNoRows.Error(),
 	}
@@ -165,7 +165,7 @@ func (r *RepoSuite) TestGetUserFail() {
 		CreatedAt:         now,
 	}
 
-	actual := &db.Error{
+	actual := &tyr.Error{
 		Code:    "1160",
 		Message: sql.ErrNoRows.Error(),
 	}
