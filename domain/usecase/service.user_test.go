@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"database/sql"
+	"github.com/kubuskotak/tyr"
 	"regexp"
 	"testing"
 	"time"
@@ -11,7 +12,7 @@ import (
 	"github.com/kubuskotak/boilerplate-go-project/config"
 	"github.com/kubuskotak/boilerplate-go-project/domain/entity"
 	"github.com/kubuskotak/boilerplate-go-project/domain/repository"
-	"github.com/kubuskotak/boilerplate-go-project/pkg/db"
+
 	"github.com/kubuskotak/valkyrie"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/require"
@@ -21,7 +22,7 @@ import (
 type UserSuite struct {
 	suite.Suite
 	service Service
-	db      *db.Sql
+	db      *tyr.Sql
 	mock    sqlmock.Sqlmock
 }
 
@@ -35,7 +36,7 @@ func (r *UserSuite) SetupTest() {
 		require.Failf(r.T(), "failed to open stub db", "%v", err)
 	}
 
-	s := &db.Sql{
+	s := &tyr.Sql{
 		Db: data,
 	}
 	r.service = Service{store: s}
@@ -100,7 +101,7 @@ func (r *UserSuite) TestRegisterTxFail() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	errTx := &db.Error{
+	errTx := &tyr.Error{
 		Code:    "1160",
 		Message: sql.ErrNoRows.Error(),
 	}
