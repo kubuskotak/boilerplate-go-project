@@ -3,10 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"go-workshop/ports/rest"
 	"os"
 
-	"github.com/kubuskotak/boilerplate-go-project/ports/grpc"
-	"github.com/kubuskotak/boilerplate-go-project/ports/rest"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -14,7 +13,6 @@ import (
 var (
 	flags = flag.NewFlagSet("baldr", flag.ExitOnError)
 	help  = flags.Bool("h", false, "print help")
-	//version = flags.Bool("version", false, "print version")
 )
 
 func main() {
@@ -37,11 +35,6 @@ func main() {
 			log.Error().Err(err)
 		}
 		return
-	case "grpc":
-		if err := grpc.Application(); err != nil {
-			log.Error().Err(err)
-		}
-		return
 	}
 }
 
@@ -51,12 +44,10 @@ func usage() {
 }
 
 var (
-	usagePrefix = `Usage: baldr [OPTIONS] COMMAND
+	usagePrefix = `Usage: goWork [OPTIONS] COMMAND
 
 Examples:
-	baldr rest
-	baldr event-store
-	baldr dispatcher
+	goWork rest
 
 Options:`
 )

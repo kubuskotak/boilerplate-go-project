@@ -2,79 +2,24 @@ package rest
 
 import (
 	"context"
-	"fmt"
-	"net/http"
-	"runtime/debug"
-	"strings"
-
 	"github.com/go-chi/chi/v5"
-	"github.com/kubuskotak/bifrost"
-	"github.com/kubuskotak/boilerplate-go-project/domain/usecase"
-	"github.com/kubuskotak/valkyrie"
-	"github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/ext"
-	"github.com/rs/zerolog/log"
+	"net/http"
+
+	pkgHttp "go-workshop/pkg/http"
 )
 
-type FormBodyHello struct {
-	Name  string `json:"name" validate:"required"`
-	Greet string `json:"greet" validate:"required"`
-}
 
 type Hello struct {
-	*usecase.Service
 }
 
 func (h *Hello) Register(ctx context.Context, router chi.Router) {
-	router.Use(bifrost.HttpTracer)
-	router.Post("/hello", bifrost.HandlerAdapter(h.Hello))
+	router.Get("/hello", h.Hello)
 }
 
-func (h *Hello) Hello(w http.ResponseWriter, r *http.Request) error {
-	span, ctx := opentracing.StartSpanFromContext(r.Context(), "Hello.post")
-	defer span.Finish()
+func (h *Hello) Hello(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
-	bifrost.JSONResponse(w)
-	var form usecase.RegisterParams
-	if err := bifrost.RequestJSONBody(r, &form); err != nil {
-		log.Error().Err(err).Msg("Request JSON body")
-		return bifrost.ErrBadGateway(w, r, err)
-	}
-
-	if err := valkyrie.Validate(form); err != nil {
-		var errString []string
-		for _, e := range err {
-			errString = append(
-				errString,
-				fmt.Sprintf(
-					"code: %s Type: %s Message: %s",
-					e.Field, e.Type, e.Message,
-				),
-			)
-		}
-		status := http.StatusBadRequest
-		er := fmt.Errorf("%s", strings.Join(errString, ";\n"))
-		ext.HTTPStatusCode.Set(span, uint16(status))
-		ext.Error.Set(span, true)
-		span.SetTag("error.kind", "validate")
-		span.SetTag("error.type", fmt.Sprintf("%d: %s", status, http.StatusText(status)))
-		span.SetTag("error.message", er.Error())
-		span.SetTag("event", "hello.post.validate")
-		span.LogKV(
-			"message", er,
-			"stack", string(debug.Stack()),
-		)
-		span.Finish()
-		return bifrost.ErrBadRequest(w, r, er)
-	}
-
-	log.Info().Interface("Tracer ID", r.Context().Value(bifrost.TracerContext)).Msg("tracer id")
-
-	u, err := h.Service.Register(ctx, form)
-	if err != nil {
-		log.Error().Err(err).Msg("Register user is failed")
-		return bifrost.ErrBadRequest(w, r, err)
-	}
-
-	return bifrost.ResponsePayload(w, r, http.StatusCreated, u)
+	_ = pkgHttp.RequestJSONBody(w, r, http.StatusOK, map[string]interface{}{
+		"Message": "Hello",
+	})
 }
